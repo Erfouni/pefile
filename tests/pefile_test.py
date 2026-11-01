@@ -402,11 +402,11 @@ class TestPEFile(unittest.TestCase):
         """
         data = bytearray(_create_pe(0x1004, 0x1004))
 
-        # PE32 load config at RVA 0x1000. Size 0x8E covers the DVRT fields,
-        # DynamicValueRelocTableOffset at 0x88 and ...Section at 0x8C.
         load_config = bytearray(0x8E)
-        struct.pack_into("<I", load_config, 0, 0x8E)
-        struct.pack_into("<IH", load_config, 0x88, 0x1000, 1)
+        struct.pack_into("<I", load_config, 0, 0x8E)  # Size
+        struct.pack_into("<I", load_config, 0x88, 0x1000)  # DynamicValueRelocTableOffset
+        struct.pack_into("<H", load_config, 0x8C, 1)  # DynamicValueRelocTableSection
+        # PE32 load config at RVA 0x1000.
         data[0x400 : 0x400 + len(load_config)] = load_config
         pe = pefile.PE(data=bytes(data))
 
